@@ -89,7 +89,7 @@ def summarize(text: list[str], inclusion: Callable) -> str:
 if __name__ == '__main__':
     arguments = docopt(__doc__)
     if arguments['<input-file>']:
-        with open(arguments['<input-file>'], 'r') as infile:
+        with open(arguments['<input-file>'], 'r', encoding='utf-8') as infile:
             document = load_document(infile)
     else:
         document = load_document(sys.stdin)
@@ -100,7 +100,7 @@ if __name__ == '__main__':
     func = lambda text, scores: threshold_inclusion(text, scores, threshold=1)
 
     if arguments['--output']:
-        with open(arguments['--output'], 'w') as outfile:
+        with open(arguments['--output'], 'w', encoding='utf-8') as outfile:
             outfile.write(summarize(document, func))
     else:
         sys.stdout.write(summarize(document, func))
