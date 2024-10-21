@@ -44,7 +44,7 @@ def calculate_tf(sentences: list[list[str]]) -> list[dict]:
     """Calculate Term Frequency for each sentence of the document
     Returns a table whose keys are the indices of sentences of the text
     and values are dictionaries of terms and their tf values."""
-    matrix: list[dict] = {}
+    matrix: list[dict] = []
     return matrix
 
 
@@ -57,12 +57,12 @@ def calculate_idf(sentences: list[list[str]]) -> dict[str, float]:
 
 
 # [TODO] Implement sentence scoring
-def score_sentences(tf_matrix: list[dict], idf_matrix: dict[str, float], sentences: list[list[str]]) -> dict[int, float]:
+def score_sentences(tf_matrix: list[dict], idf_matrix: dict[str, float], sentences: list[list[str]]) -> list[float]:
     """Score each sentence for importance based on the terms it contains.
     Assumes that there are no empty sentences.
     Returns a table whose keys are the indices of sentences of the text
     and values are the sum of tf-idf scores of each word in the sentence"""
-    scores: list[float] = {}
+    scores: list[float] = []
     return scores
 
 
