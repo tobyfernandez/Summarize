@@ -17,6 +17,9 @@ import sys
 from collections import defaultdict
 from collections.abc import Callable
 from typing import TextIO
+import math
+
+# Use wget in console for websites
 
 
 def load_document(textfile: TextIO) -> list[str]:
@@ -31,11 +34,16 @@ def clean_text(text: list[str]) -> list[list[str]]:
     """Transform text into a list of terms for each sentence"""
     sentences: list[list[str]] = []
     for line in text:
-        sentence = [word.casefold()
+        raw_sentence = [word.casefold()
                     for word in nltk.word_tokenize(line)]
-        if len(sentence) > 0:
-            sentences.append(sentence)
+        clean_sentence = []
+        for word in raw_sentence:
+            if word.isalnum():
+                clean_sentence.append(word)
+        if len(clean_sentence) > 0:
+            sentences.append(clean_sentence)
     return sentences
+
 
                 
 
@@ -45,6 +53,11 @@ def calculate_tf(sentences: list[list[str]]) -> list[dict]:
     Returns a table whose keys are the indices of sentences of the text
     and values are dictionaries of terms and their tf values."""
     matrix: list[dict] = []
+    for sentence in sentences:
+        tf = {}
+        for term in sentence:
+            tf[term] = tf.get(term, 0) + 1
+        matrix.append(tf)
     return matrix
 
 
@@ -53,6 +66,15 @@ def calculate_idf(sentences: list[list[str]]) -> dict[str, float]:
     """Calculate the Inverse `Document'(Sentence) Frequency of each term.
     Returns a table of terms and their idf values."""
     matrix: dict[str, float] = defaultdict(float)
+    num_sentences = len(sentences)
+    for sentence in sentences:
+        terms_checked = set()
+        for term in sentence:
+            if term not in terms_checked:
+                matrix[term] += 1
+                terms_checked.add(term)
+    for term in matrix:
+        matrix[term] = math.log(num_sentences / float(matrix[term]))
     return matrix
 
 
@@ -63,6 +85,11 @@ def score_sentences(tf_matrix: list[dict], idf_matrix: dict[str, float], sentenc
     Returns a table whose keys are the indices of sentences of the text
     and values are the sum of tf-idf scores of each word in the sentence"""
     scores: list[float] = []
+    for index, sentence in enumerate(sentences):
+        score = 0.0
+        for term in sentence:
+            score += tf_matrix[index].get(term, 0) * idf_matrix.get(term, 0)
+        scores.append(score)
     return scores
 
 
