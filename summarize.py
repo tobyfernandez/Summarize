@@ -34,14 +34,10 @@ def clean_text(text: list[str]) -> list[list[str]]:
     """Transform text into a list of terms for each sentence"""
     sentences: list[list[str]] = []
     for line in text:
-        raw_sentence = [word.casefold()
-                    for word in nltk.word_tokenize(line)]
-        clean_sentence = []
-        for word in raw_sentence:
-            if word.isalnum():
-                clean_sentence.append(word)
-        if len(clean_sentence) > 0:
-            sentences.append(clean_sentence)
+        sentence = [word.casefold()
+                    for word in nltk.word_tokenize(line) if word.isalnum]
+        if len(sentence) > 0:
+            sentences.append(sentence)
     return sentences
 
 
@@ -56,7 +52,7 @@ def calculate_tf(sentences: list[list[str]]) -> list[dict]:
     for sentence in sentences:
         tf = {}
         for term in sentence:
-            tf[term] = tf.get(term, 0) + 1
+            tf[term] = tf.get(term, 0) + 1  # Counting number of appearances of term
         matrix.append(tf)
     return matrix
 
@@ -71,10 +67,10 @@ def calculate_idf(sentences: list[list[str]]) -> dict[str, float]:
         terms_checked = set()
         for term in sentence:
             if term not in terms_checked:
-                matrix[term] += 1
-                terms_checked.add(term)
+                matrix[term] += 1 # Indicates that the term has been found in another sentence
+                terms_checked.add(term) # Ensures the term is counted only once per sentence
     for term in matrix:
-        matrix[term] = math.log(num_sentences / float(matrix[term]))
+        matrix[term] = math.log(num_sentences / float(matrix[term])) # Calculates IDF
     return matrix
 
 
