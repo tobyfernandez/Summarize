@@ -35,7 +35,7 @@ def clean_text(text: list[str]) -> list[list[str]]:
     sentences: list[list[str]] = []
     for line in text:
         sentence = [word.casefold()
-                    for word in nltk.word_tokenize(line) if word.isalnum]
+                    for word in nltk.word_tokenize(line) if word.isalnum()]
         if len(sentence) > 0:
             sentences.append(sentence)
     return sentences
